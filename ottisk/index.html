@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Оттиск — генератор фонов</title>
+<style>
+:root{color-scheme:light;--paper:oklch(1 0 0);--ink:oklch(.22 .01 245);--mute:oklch(.45 .013 246);--line:oklch(.86 .008 246);--stage:oklch(.958 .004 245);--blue:oklch(.43 .095 244);font:15px/1.4 Inter,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--stage)}
+*{box-sizing:border-box}body{margin:0}button,select,input{font:inherit;color:inherit}button,select,input[type=color],input[type=range]{cursor:pointer}button{border:1px solid var(--line);background:white;border-radius:6px;padding:8px 12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px}button:hover,select:hover{background:var(--stage)}button:disabled{opacity:.6;cursor:progress}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+header{height:70px;padding:0 clamp(18px,3.5vw,64px);border-bottom:1px solid var(--line);background:white;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand,.identity{display:flex;align-items:center}.brand{gap:10px;font-size:25px;font-weight:720;letter-spacing:-.038em}.mark{width:28px;height:28px;border-radius:50%;background:repeating-linear-gradient(120deg,var(--ink) 0 2.6px,transparent 2.6px 4.8px)}.identity{gap:20px}.sub{border-left:1px solid var(--line);padding-left:20px;color:var(--mute);font-size:13px}.export{background:var(--blue);color:white;border-color:var(--blue);height:40px;padding:0 17px}.export:hover{background:oklch(.35 .088 244)}
+main{display:grid;grid-template-columns:minmax(0,1fr) 350px;min-height:calc(100svh - 70px)}
+.stage{padding:28px clamp(18px,4vw,76px) 26px;display:flex;align-items:center;justify-content:center;min-width:0}
+figure{margin:0;width:min(100%,max(390px,calc(100svh - 196px)),950px)}
+.art{aspect-ratio:1;position:relative;isolation:isolate;box-shadow:0 3px 12px #20263314}
+canvas{width:100%;height:100%;display:block;background:#c5d6ee}.art:before,.art:after{content:"";position:absolute;inset:-7px;pointer-events:none;background:linear-gradient(var(--mute),var(--mute)) top left / 9px 1px,linear-gradient(var(--mute),var(--mute)) top left / 1px 9px,linear-gradient(var(--mute),var(--mute)) bottom right / 9px 1px,linear-gradient(var(--mute),var(--mute)) bottom right / 1px 9px;background-repeat:no-repeat}.art:after{transform:scaleX(-1)}
+figcaption{padding-top:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--mute);font-size:12px;font-variant-numeric:tabular-nums}.id{font-family:"IBM Plex Mono",Consolas,monospace;font-size:12px}
+aside{background:var(--paper);border-left:1px solid var(--line);padding:27px 24px 24px}h1{font-size:22px;line-height:1.2;letter-spacing:-.03em;margin:0 0 22px}h2{margin:0;font-size:15px;letter-spacing:-.015em}.group{padding:18px 0;border-top:1px solid var(--line)}.group:first-of-type{padding-top:15px}.groupHeader,.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.textBtn{font-size:12px;padding:5px 6px;color:var(--blue);border-color:transparent}.palette{display:flex;gap:4px;margin-top:12px}.chip{position:relative;flex:1;height:39px;border-radius:3px;overflow:hidden;box-shadow:inset 0 0 0 1px #20263322}.chip:focus-within{outline:2px solid var(--blue);outline-offset:2px}.chip input{opacity:0;position:absolute;inset:0;width:100%;height:100%;border:0}
+select{width:100%;height:37px;display:block;border:1px solid var(--line);border-radius:5px;background:var(--paper);padding:0 8px;margin:12px 0 0}.setting{margin-top:13px}.row,.setting label{font-size:13px}.row output{font-family:Consolas,monospace;color:var(--mute);font-size:12px}input[type=range]{display:block;width:100%;margin:1px 0;height:22px;accent-color:var(--blue)}.wide{width:100%;margin-top:8px}.status{color:var(--mute);font-size:12px;min-height:1.4em;margin:10px 0 0}
+@media(min-width:1500px){main{grid-template-columns:minmax(0,1fr) 390px}aside{padding:34px}}@media(max-width:800px){main{grid-template-columns:minmax(0,1fr) 290px}aside{padding:22px 16px}.stage{padding:24px 18px}}@media(max-width:650px){header{height:58px}.sub{display:none}.brand{font-size:22px}.export{height:35px}main{display:flex;flex-direction:column}.stage{padding:24px 22px 15px}figure{width:min(100%,52svh)}aside{border-left:0;border-top:1px solid var(--line);padding:20px max(20px,calc((100% - 520px)/2))}h1{margin-bottom:14px}.group{padding:16px 0}figcaption{padding-top:12px}}
+</style>
+<header><div class="identity"><div class="brand"><i class="mark" aria-hidden="true"></i>Оттиск</div><span class="sub">Генератор фонов</span></div><button id="export" class="export"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></svg><span>Скачать PNG</span></button></header>
+<main><section class="stage" aria-label="Предпросмотр"><figure><div class="art"><canvas id="view" width="768" height="768" aria-label="Предпросмотр фона"></canvas></div><figcaption><span>3000 × 3000 px</span><span class="id">Оттиск № <b id="seed"></b></span></figcaption></figure></section>
+<aside><h1>Настройки фона</h1>
+<section class="group"><div class="groupHeader"><h2>Палитра</h2><button id="random" class="textBtn" title="Сгенерировать случайные цвета"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h3c4 0 6 12 11 12h4m-4-4 4 4-4 4M3 18h3c1.4 0 2.7-1.5 3.9-3.5M14 8c1.2-1.5 2.1-2 3.5-2H21m-4-4 4 4-4 4"/></svg>Случайная</button></div><div class="palette" id="palette"></div></section>
+<section class="group"><h2><label for="shape">Форма расплывания</label></h2><select id="shape"><option value="ink">Чернильные наплывы</option><option value="tide">Волны</option><option value="swirl">Вихрь</option><option value="cloud">Облака</option></select><div id="shapeSliders"></div></section>
+<section class="group"><h2><label for="texture">Текстура</label></h2><select id="texture"><option value="spray">Напыление</option><option value="film">Плёночное зерно</option><option value="paper">Бумага</option><option value="clean">Гладкая</option></select><div id="textureSliders"></div></section>
+<div class="group"><button class="wide" id="newShape"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 10a8 8 0 1 0-1.4 7M20 4v6h-6"/></svg>Новая композиция</button><p class="status" id="status" role="status"></p></div></aside></main>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const state = {seed:1847,shape:'ink',texture:'spray',flow:64,blur:43,grain:68,size:44,colors:['#35283d','#82659e','#acb3e2','#d1e4ed','#f6e9b9','#e2a2bd']};
+const clamp = (n,a=0,b=1) => Math.min(b,Math.max(a,n));
+const blend = (a,b,t) => a+(b-a)*t;
+const ease = t => t*t*(3-2*t);
+function hash(x,y,s){
+  let k = Math.imul(x,0x85ebca6b)^Math.imul(y,0xc2b2ae35)^s;
+  k = Math.imul(k^(k>>>16),0x7feb352d);
+  k = Math.imul(k^(k>>>15),0x846ca68b);
+  return ((k^(k>>>16))>>>0)/4294967296;
+}
+function field(seed){
+  const side=128, table=new Float32Array(side*side);
+  for(let i=0;i<table.length;i++) table[i]=hash(i,13,seed);
+  return (x,y) => {
+    const ix=Math.floor(x),iy=Math.floor(y), fx=ease(x-ix),fy=ease(y-iy);
+    const a=(iy&127)*side,b=((iy+1)&127)*side, l=ix&127,r=(ix+1)&127;
+    return blend(blend(table[a+l],table[a+r],fx),blend(table[b+l],table[b+r],fx),fy);
+  };
+}
+function ramp(x,c,w){return ease(clamp(.5+(x-c)/(2*w)))}
+function makePlate(s){
+  const n=field(s.seed), side=600, plate=document.createElement('canvas');
+  plate.width=plate.height=side;
+  const ctx=plate.getContext('2d'),pixels=ctx.createImageData(side,side), data=pixels.data;
+  const p=s.colors.map(hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)));
+  const f=s.flow/100, soft=.008+.175*(s.blur/100)**1.45;
+  const fixed=s.seed===1847, angle=fixed?0:hash(91,9,s.seed)*Math.PI*2;
+  const ca=Math.cos(angle),sa=Math.sin(angle);
+  const offX=fixed?0:(n(4,7)-.5)*.36,offY=fixed?0:(n(3,5)-.5)*.36;
+  for(let j=0,k=0;j<side;j++)for(let i=0;i<side;i++,k+=4){
+    const u=(i+.5)/side-.5,v=(j+.5)/side-.5;
+    const x=u*ca-v*sa+.5+offX,y=u*sa+v*ca+.5+offY;
+    const a=n(x*2.6+2.1,y*2.9+5.4)-.5,b=n(x*3.1+9.2,y*2.7+.8)-.5;
+    let X=x+f*(.69*a+.115*(n(x*7+3*a,y*7+5*b)-.5));
+    let Y=y+f*(.63*b+.09*(n(x*8-2*b,y*8+2*a)-.5));
+    let ink,warm;
+    if(s.shape==='ink'){
+      const sweep=Y+f*(.18*Math.sin(4.8*X+6*Y)+.08*Math.sin(12*Y+7*X));
+      const curl=X+f*(.16*Math.sin(7*sweep+.6)+.055*Math.sin(22*sweep+5*X));
+      const arc=Math.hypot((curl-.54)*1.04,(sweep-.34)*.9);
+      ink=(arc-.442)*1.57+(.48-curl)*.24+(Y-.50)*.13;
+      const fold=Math.sin(28*sweep+12*curl+4*Math.sin(7*curl+3*sweep));
+      ink+=f*(.12*fold*(1-ramp(ink,.105,.22))*(1-ramp(X,.40,.18)));
+      ink-=.12*(1-ramp(Y,.21,.19));
+      warm=X-.75+.105*Math.sin(6*sweep+1.2)+.14*(n(curl*4+9,sweep*4+6)-.5);
+    }else if(s.shape==='tide'){
+      const wave=Y+.28*Math.sin(4.7*X+.8)+.13*Math.sin(7*X+2.5*Y);
+      ink=.2*Math.sin(wave*10+.8)+.05*(X-.5);warm=.18*Math.sin(wave*8-1.8);
+    }else if(s.shape==='swirl'){
+      const dx=X-.49,dy=Y-.50,rad=Math.hypot(dx,dy);
+      const phase=Math.atan2(dy,dx)+rad*(6+7*f);
+      ink=.25*Math.cos(phase)*Math.min(1,rad*6);warm=.20*Math.sin(phase+.12)*Math.min(1,rad*6);
+    }else{
+      ink=(n(X*2.8+6,Y*2.8+17)-.5)*.87;
+      warm=(n(X*3.3+12,Y*3.3+8)-.5)*.65;
+    }
+    const frost=clamp(.59+.32*Math.sin(4.6*Y+6.4*X)+.45*(n(X*5,Y*5+3)-.5));
+    const lilac=ramp(ink,.032,.034+soft),dark=ramp(ink,.184,.067+soft);
+    const yellow=ramp(warm,-.033,.041+soft),pink=ramp(warm,.115,.050+soft);
+    const low=clamp(.7*(Y-.4)+.38*(n(X*4+11,Y*4)-.5));
+    for(let c=0;c<3;c++){
+      let val=blend(p[2][c],p[3][c],frost);
+      val=blend(val,p[1][c],lilac);val=blend(val,p[0][c],dark);
+      val=blend(val,p[4][c],yellow);val=blend(val,p[5][c],pink);
+      data[k+c]=blend(val,p[1][c],low*pink);
+    }
+    data[k+3]=255;
+  }
+  ctx.putImageData(pixels,0,0);return plate;
+}
+let cacheKey='',cachedPlate;
+function paintBase(canvas,s){
+  const key=[s.seed,s.shape,s.flow,s.blur,...s.colors].join('|');
+  if(key!==cacheKey){cachedPlate=makePlate(s);cacheKey=key}
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  ctx.imageSmoothingQuality='high';ctx.drawImage(cachedPlate,0,0,canvas.width,canvas.height);
+  return ctx;
+}
+function grainPainter(s,side){
+  const strength=s.grain/100, zoom=3000/side, cell=(1.7+7.6*(s.size/100)**1.7);
+  const seed=s.seed|0, material=s.texture;
+  // Sample the same grain field in print coordinates at both resolutions.
+  const attenuation=Math.min(1,Math.sqrt(cell/zoom));
+  function noise(x,y,salt){
+    const ix=Math.floor(x),iy=Math.floor(y),fx=ease(x-ix),fy=ease(y-iy);
+    return blend(blend(hash(ix,iy,salt),hash(ix+1,iy,salt),fx),
+                 blend(hash(ix,iy+1,salt),hash(ix+1,iy+1,salt),fx),fy);
+  }
+  return (data,startRow) => {
+    for(let k=0;k<data.length;k+=4){
+      const index=k/4,x=(index%side+.5)*zoom,y=(Math.floor(index/side)+startRow+.5)*zoom;
+      const a=noise(x/cell,y/cell,seed+19);
+      const fine=hash(Math.floor(x),Math.floor(y),seed+23)-.5;
+      let delta;
+      if(material==='spray'){
+        const fleck=Math.max(0,(a-.56)/.44);
+        delta=(15*(a-.5)-205*fleck**1.65+24*fine/Math.sqrt(zoom))*strength;
+      }else if(material==='paper'){
+        const fibre=noise(x/(cell*3.6),y/(cell*.64),seed+33);
+        delta=((a-.5)*28+(fibre-.49)*94+fine*12)*strength;
+      }else{delta=((a-.5)*105+fine*40/Math.sqrt(zoom))*strength}
+      delta*=attenuation;
+      data[k]+=delta;data[k+1]+=delta;data[k+2]+=delta*.95;
+    }
+  };
+}
+function grainStrip(ctx,w,y,h,paint){
+  const im=ctx.getImageData(0,y,w,h);paint(im.data,y);ctx.putImageData(im,0,y);
+}
+function textured(s){return s.texture!=='clean'&&s.grain>0}
+let frame=0;
+function preview(){
+  frame=0;
+  const canvas=$('view'),ctx=paintBase(canvas,state),w=canvas.width;
+  if(textured(state))grainStrip(ctx,w,0,w,grainPainter(state,w));
+  $('seed').textContent=String(state.seed).padStart(4,'0');
+}
+function refresh(){if(!frame)frame=requestAnimationFrame(preview)}
+const roles=['Глубокая тень','Чернила','Полутон','Свет','Тёплый переход','Акцент'];
+function syncColors(){[...$('palette').children].forEach((chip,i)=>{
+  chip.style.background=state.colors[i];chip.firstChild.value=state.colors[i];
+  chip.title=roles[i]+' · '+state.colors[i].toUpperCase();
+})}
+roles.forEach((role,i)=>{
+  const chip=document.createElement('label'),input=document.createElement('input');
+  chip.className='chip';input.type='color';input.setAttribute('aria-label',role);
+  chip.append(input);$('palette').append(chip);
+  input.oninput=()=>{state.colors[i]=input.value;syncColors();refresh()};
+});
+syncColors();
+function slider(parent,key,label){
+  const box=document.createElement('div');box.className='setting';
+  box.innerHTML='<div class="row"><label for="'+key+'">'+label+'</label><output for="'+key+'">'+state[key]+'%</output></div><input type="range" min="0" max="100" value="'+state[key]+'" id="'+key+'">';
+  $(parent).append(box);
+  $(key).oninput=e=>{state[key]=+e.target.value;box.querySelector('output').value=state[key]+'%';refresh()};
+}
+slider('shapeSliders','flow','Искажение');slider('shapeSliders','blur','Размытие');
+slider('textureSliders','grain','Интенсивность');slider('textureSliders','size','Размер зерна');
+for(const key of ['shape','texture'])$(key).onchange=e=>{
+  state[key]=e.target.value;$('textureSliders').hidden=state.texture==='clean';refresh();
+};
+function hslHex(h,s,l){
+  const a=s*Math.min(l,1-l);
+  return '#'+[0,8,4].map(n=>{const k=(n+h/30)%12;return Math.round(255*(l-a*Math.max(-1,Math.min(k-3,9-k,1)))).toString(16).padStart(2,'0')}).join('');
+}
+$('random').onclick=()=>{
+  const h=Math.random()*360,shift=85+Math.random()*100,dir=Math.random()<.5?-1:1;
+  const colors=[[0,.26,.17],[12,.39,.46],[-18,.54,.73],[-31,.52,.88],[dir*shift,.73,.83],[dir*(shift+37),.59,.7]];
+  state.colors=colors.map(([d,s,l])=>hslHex((h+d+360)%360,s,l+.04*(Math.random()-.5)));
+  syncColors();refresh();
+};
+$('newShape').onclick=()=>{state.seed=1+(state.seed+Math.floor(Math.random()*9998))%9999;refresh()};
+const pause=()=>new Promise(r=>setTimeout(r,0));
+$('export').onclick=async()=>{
+  const button=$('export'),caption=button.querySelector('span'),s={...state,colors:[...state.colors]};
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=3000;
+  button.disabled=true;caption.textContent='Подготовка…';$('status').textContent='';await pause();
+  try{
+    const w=canvas.width,ctx=paintBase(canvas,s);
+    if(textured(s)){
+      const paint=grainPainter(s,w);
+      for(let y=0;y<w;y+=96){grainStrip(ctx,w,y,Math.min(96,w-y),paint);caption.textContent='Экспорт '+Math.round(100*Math.min(w,y+96)/w)+'%';await pause()}
+    }
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+    if(!blob)throw new Error('PNG');
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='ottisk-'+s.seed+'-3000.png';document.body.append(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);$('status').textContent='PNG готов к сохранению.';
+  }catch{$('status').textContent='Не удалось создать PNG. Попробуйте ещё раз.'}
+  finally{canvas.width=canvas.height=1;caption.textContent='Скачать PNG';button.disabled=false}
+};
+preview();
+</script>
+</html>
