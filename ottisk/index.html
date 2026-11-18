@@ -3,24 +3,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Оттиск — генератор фонов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600;700&display=swap">
 <style>
-:root{color-scheme:light;--paper:oklch(1 0 0);--ink:oklch(.22 .01 245);--mute:oklch(.45 .013 246);--line:oklch(.86 .008 246);--stage:oklch(.958 .004 245);--blue:oklch(.43 .095 244);font:15px/1.4 Inter,"Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--stage)}
-*{box-sizing:border-box}body{margin:0}button,select,input{font:inherit;color:inherit}button,select,input[type=color],input[type=range]{cursor:pointer}button{border:1px solid var(--line);background:white;border-radius:6px;padding:8px 12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px}button:hover,select:hover{background:var(--stage)}button:disabled{opacity:.6;cursor:progress}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-header{height:70px;padding:0 clamp(18px,3.5vw,64px);border-bottom:1px solid var(--line);background:white;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand,.identity{display:flex;align-items:center}.brand{gap:10px;font-size:25px;font-weight:720;letter-spacing:-.038em}.mark{width:28px;height:28px;border-radius:50%;background:repeating-linear-gradient(120deg,var(--ink) 0 2.6px,transparent 2.6px 4.8px)}.identity{gap:20px}.sub{border-left:1px solid var(--line);padding-left:20px;color:var(--mute);font-size:13px}.export{background:var(--blue);color:white;border-color:var(--blue);height:40px;padding:0 17px}.export:hover{background:oklch(.35 .088 244)}
-main{display:grid;grid-template-columns:minmax(0,1fr) 350px;min-height:calc(100svh - 70px)}
-.stage{padding:28px clamp(18px,4vw,76px) 26px;display:flex;align-items:center;justify-content:center;min-width:0}
-figure{margin:0;width:min(100%,max(390px,calc(100svh - 196px)),950px)}
-.art{aspect-ratio:1;position:relative;isolation:isolate;box-shadow:0 3px 12px #20263314}
-canvas{width:100%;height:100%;display:block;background:#c5d6ee}.art:before,.art:after{content:"";position:absolute;inset:-7px;pointer-events:none;background:linear-gradient(var(--mute),var(--mute)) top left / 9px 1px,linear-gradient(var(--mute),var(--mute)) top left / 1px 9px,linear-gradient(var(--mute),var(--mute)) bottom right / 9px 1px,linear-gradient(var(--mute),var(--mute)) bottom right / 1px 9px;background-repeat:no-repeat}.art:after{transform:scaleX(-1)}
-figcaption{padding-top:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--mute);font-size:12px;font-variant-numeric:tabular-nums}.id{font-family:"IBM Plex Mono",Consolas,monospace;font-size:12px}
-aside{background:var(--paper);border-left:1px solid var(--line);padding:27px 24px 24px}h1{font-size:22px;line-height:1.2;letter-spacing:-.03em;margin:0 0 22px}h2{margin:0;font-size:15px;letter-spacing:-.015em}.group{padding:18px 0;border-top:1px solid var(--line)}.group:first-of-type{padding-top:15px}.groupHeader,.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.textBtn{font-size:12px;padding:5px 6px;color:var(--blue);border-color:transparent}.palette{display:flex;gap:4px;margin-top:12px}.chip{position:relative;flex:1;height:39px;border-radius:3px;overflow:hidden;box-shadow:inset 0 0 0 1px #20263322}.chip:focus-within{outline:2px solid var(--blue);outline-offset:2px}.chip input{opacity:0;position:absolute;inset:0;width:100%;height:100%;border:0}
-select{width:100%;height:37px;display:block;border:1px solid var(--line);border-radius:5px;background:var(--paper);padding:0 8px;margin:12px 0 0}.setting{margin-top:13px}.row,.setting label{font-size:13px}.row output{font-family:Consolas,monospace;color:var(--mute);font-size:12px}input[type=range]{display:block;width:100%;margin:1px 0;height:22px;accent-color:var(--blue)}.wide{width:100%;margin-top:8px}.status{color:var(--mute);font-size:12px;min-height:1.4em;margin:10px 0 0}
-.actions{display:flex;gap:8px;align-items:center}.iconBtn{width:40px;height:40px;padding:0}.iconBtn:disabled{opacity:.35;cursor:default}
-.presets{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.preset{height:26px;padding:0;border-radius:4px;overflow:hidden;display:flex;gap:0;border:1px solid #20263322}.preset i{flex:1;align-self:stretch}.preset[aria-pressed=true]{outline:2px solid var(--blue);outline-offset:2px}
-.seedBox{display:inline-flex;align-items:center;gap:4px}.seedBox input{width:5.2ch;font:600 12px "IBM Plex Mono",Consolas,monospace;border:1px solid transparent;border-radius:4px;padding:2px 3px;background:transparent;color:var(--ink);text-align:right;-moz-appearance:textfield}.seedBox input::-webkit-inner-spin-button{display:none}.seedBox input:hover{border-color:var(--line)}.seedBox input:focus{border-color:var(--blue);background:white;outline:none}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:white;padding:9px 14px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}.toast.on{opacity:1}
-@media(min-width:1500px){main{grid-template-columns:minmax(0,1fr) 390px}aside{padding:34px}}@media(max-width:800px){main{grid-template-columns:minmax(0,1fr) 290px}aside{padding:22px 16px}.stage{padding:24px 18px}}@media(max-width:650px){header{height:58px}.iconBtn{width:35px;height:35px}.actions{gap:5px}.export span{display:none}.sub{display:none}.brand{font-size:22px}.export{height:35px}main{display:flex;flex-direction:column}.stage{padding:24px 22px 15px}figure{width:min(100%,52svh)}aside{border-left:0;border-top:1px solid var(--line);padding:20px max(20px,calc((100% - 520px)/2))}h1{margin-bottom:14px}.group{padding:16px 0}figcaption{padding-top:12px}}
+:root{color-scheme:dark;--stage:#000;--paper:#0b0b0b;--raised:#161616;--hover:#1d1d1d;--line:#262626;--line2:#3a3a3a;--ink:#ededed;--mute:#8c8c8c;--accent:#f4f4f4;--onAccent:#000;font:14px/1.45 "Source Code Pro",ui-monospace,Menlo,Consolas,monospace;color:var(--ink);background:var(--stage)}
+*{box-sizing:border-box}body{margin:0;background:var(--stage)}button,select,input{font:inherit;color:inherit}button,select,input[type=color],input[type=range]{cursor:pointer}
+button{border:1px solid var(--line2);background:var(--raised);border-radius:4px;padding:8px 12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .12s,border-color .12s}button:hover,select:hover{background:var(--hover);border-color:#4a4a4a}button:disabled{opacity:.6;cursor:progress}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+header{height:64px;padding:0 clamp(18px,3vw,48px);border-bottom:1px solid var(--line);background:var(--stage);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand,.identity{display:flex;align-items:center}.brand{gap:12px;font-size:20px;font-weight:700;letter-spacing:-.02em}.mark{width:24px;height:24px;border-radius:50%;background:repeating-linear-gradient(120deg,var(--ink) 0 2.2px,transparent 2.2px 4.2px)}.identity{gap:18px}.sub{border-left:1px solid var(--line);padding-left:18px;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.export{background:var(--accent);color:var(--onAccent);border-color:var(--accent);height:40px;padding:0 16px}.export:hover{background:#fff;border-color:#fff}
+main{display:grid;grid-template-columns:minmax(0,1fr) 360px;min-height:calc(100svh - 64px)}
+.stage{padding:32px clamp(18px,4vw,76px) 26px;display:flex;align-items:center;justify-content:center;min-width:0}
+figure{margin:0;width:min(100%,max(390px,calc(100svh - 190px)),950px)}
+.art{aspect-ratio:1;position:relative;isolation:isolate}
+canvas{width:100%;height:100%;display:block;background:#111}.art:before,.art:after{content:"";position:absolute;inset:-8px;pointer-events:none;background:linear-gradient(var(--line2),var(--line2)) top left / 10px 1px,linear-gradient(var(--line2),var(--line2)) top left / 1px 10px,linear-gradient(var(--line2),var(--line2)) bottom right / 10px 1px,linear-gradient(var(--line2),var(--line2)) bottom right / 1px 10px;background-repeat:no-repeat}.art:after{transform:scaleX(-1)}
+figcaption{padding-top:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--mute);font-size:12px;font-variant-numeric:tabular-nums}.id{font-size:12px}
+aside{background:var(--paper);border-left:1px solid var(--line);padding:26px 24px 24px}h1{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--mute);margin:0 0 18px}h2{margin:0;font-size:14px;font-weight:600}.group{padding:18px 0;border-top:1px solid var(--line)}.group:first-of-type{padding-top:16px}.groupHeader,.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.textBtn{font-size:12px;padding:5px 6px;color:var(--ink);background:transparent;border-color:transparent}.textBtn:hover{background:var(--raised);border-color:var(--line)}
+.palette{display:flex;gap:4px;margin-top:12px}.chip{position:relative;flex:1;height:40px;border-radius:3px;overflow:hidden;box-shadow:inset 0 0 0 1px #ffffff1f}.chip:focus-within{outline:2px solid var(--accent);outline-offset:2px}.chip input{opacity:0;position:absolute;inset:0;width:100%;height:100%;border:0}
+select{width:100%;height:38px;display:block;border:1px solid var(--line2);border-radius:4px;background:var(--raised);padding:0 8px;margin:12px 0 0}select option{background:var(--raised);color:var(--ink)}
+.setting{margin-top:14px}.row,.setting label{font-size:13px}.row output{color:var(--mute);font-size:12px}input[type=range]{display:block;width:100%;margin:2px 0;height:22px;accent-color:var(--accent)}.wide{width:100%;margin-top:8px}.status{color:var(--mute);font-size:12px;min-height:1.4em;margin:10px 0 0}
+.actions{display:flex;gap:8px;align-items:center}.iconBtn{width:40px;height:40px;padding:0}.iconBtn:disabled{opacity:.3;cursor:default}.iconBtn:disabled:hover{background:var(--raised);border-color:var(--line2)}
+.presets{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.preset{height:26px;padding:0;border-radius:3px;overflow:hidden;display:flex;gap:0;border:1px solid #ffffff1f}.preset i{flex:1;align-self:stretch}.preset[aria-pressed=true]{outline:2px solid var(--accent);outline-offset:2px}
+.seedBox{display:inline-flex;align-items:center;gap:4px}.seedBox input{width:5.6ch;font:600 12px "Source Code Pro",ui-monospace,monospace;border:1px solid transparent;border-radius:3px;padding:2px 3px;background:transparent;color:var(--ink);text-align:right;-moz-appearance:textfield}.seedBox input::-webkit-inner-spin-button{display:none}.seedBox input:hover{border-color:var(--line2)}.seedBox input:focus{border-color:var(--accent);background:var(--raised);outline:none}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--accent);color:var(--onAccent);padding:9px 14px;border-radius:4px;font-size:13px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}.toast.on{opacity:1}
+@media(min-width:1500px){main{grid-template-columns:minmax(0,1fr) 400px}aside{padding:32px}}@media(max-width:800px){main{grid-template-columns:minmax(0,1fr) 300px}aside{padding:22px 16px}.stage{padding:24px 18px}}@media(max-width:650px){header{height:56px;padding:0 16px}.iconBtn{width:36px;height:36px}.actions{gap:5px}.export span{display:none}.sub{display:none}.brand{font-size:18px}.export{height:36px;padding:0 10px}main{display:flex;flex-direction:column}.stage{padding:24px 20px 15px}figure{width:min(100%,52svh)}aside{border-left:0;border-top:1px solid var(--line);padding:20px max(16px,calc((100% - 520px)/2))}.group{padding:16px 0}figcaption{padding-top:12px}}
 </style>
 <header><div class="identity"><div class="brand"><i class="mark" aria-hidden="true"></i>Оттиск</div><span class="sub">Генератор фонов</span></div><div class="actions"><button id="undo" class="iconBtn" title="Отменить (Ctrl/Cmd+Z)" aria-label="Отменить" disabled><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button><button id="redo" class="iconBtn" title="Повторить (Ctrl/Cmd+Shift+Z)" aria-label="Повторить" disabled><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button><button id="share" class="iconBtn" title="Скопировать ссылку на этот фон" aria-label="Скопировать ссылку"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L12 5.6M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></svg></button><button id="export" class="export"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></svg><span>Скачать PNG</span></button></div></header>
 <main><section class="stage" aria-label="Предпросмотр"><figure><div class="art"><canvas id="view" width="768" height="768" aria-label="Предпросмотр фона"></canvas></div><figcaption><span>3000 × 3000 px</span><label class="id seedBox" title="Номер композиции: введите от 1 до 9999">Оттиск №<input id="seed" type="number" min="1" max="9999" inputmode="numeric" aria-label="Номер оттиска"></label></figcaption></figure></section>
@@ -52,16 +60,16 @@ function field(seed){
   };
 }
 function ramp(x,c,w){return ease(clamp(.5+(x-c)/(2*w)))}
-function makePlate(s){
-  const n=field(s.seed), side=600, plate=document.createElement('canvas');
-  plate.width=plate.height=side;
-  const ctx=plate.getContext('2d'),pixels=ctx.createImageData(side,side), data=pixels.data;
-  const p=s.colors.map(hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)));
-  const f=s.flow/100, soft=.008+.175*(s.blur/100)**1.45;
+// Geometry of the stains depends only on seed, shape and flow; colours and blur are applied later
+// to the cached fields, so recolouring does not recompute the noise.
+function computeFields(s,side){
+  const n=field(s.seed), N=side*side;
+  const F={side,ink:new Float32Array(N),warm:new Float32Array(N),frost:new Float32Array(N),low:new Float32Array(N)};
+  const f=s.flow/100;
   const fixed=s.seed===1847, angle=fixed?0:hash(91,9,s.seed)*Math.PI*2;
   const ca=Math.cos(angle),sa=Math.sin(angle);
   const offX=fixed?0:(n(4,7)-.5)*.36,offY=fixed?0:(n(3,5)-.5)*.36;
-  for(let j=0,k=0;j<side;j++)for(let i=0;i<side;i++,k+=4){
+  for(let j=0,k=0;j<side;j++)for(let i=0;i<side;i++,k++){
     const u=(i+.5)/side-.5,v=(j+.5)/side-.5;
     const x=u*ca-v*sa+.5+offX,y=u*sa+v*ca+.5+offY;
     const a=n(x*2.6+2.1,y*2.9+5.4)-.5,b=n(x*3.1+9.2,y*2.7+.8)-.5;
@@ -105,30 +113,47 @@ function makePlate(s){
       ink=(n(X*2.8+6,Y*2.8+17)-.5)*.87;
       warm=(n(X*3.3+12,Y*3.3+8)-.5)*.65;
     }
-    const frost=clamp(.59+.32*Math.sin(4.6*Y+6.4*X)+.45*(n(X*5,Y*5+3)-.5));
+    F.ink[k]=ink;F.warm[k]=warm;
+    F.frost[k]=clamp(.59+.32*Math.sin(4.6*Y+6.4*X)+.45*(n(X*5,Y*5+3)-.5));
+    F.low[k]=clamp(.7*(Y-.4)+.38*(n(X*4+11,Y*4)-.5));
+  }
+  return F;
+}
+function composePlate(F,s){
+  const side=F.side,plate=document.createElement('canvas');plate.width=plate.height=side;
+  const ctx=plate.getContext('2d'),pixels=ctx.createImageData(side,side),data=pixels.data;
+  const p=s.colors.map(hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)));
+  const soft=.008+.175*(s.blur/100)**1.45;
+  for(let k=0,o=0;k<side*side;k++,o+=4){
+    const ink=F.ink[k],warm=F.warm[k],frost=F.frost[k];
     const lilac=ramp(ink,.032,.034+soft),dark=ramp(ink,.184,.067+soft);
-    const yellow=ramp(warm,-.033,.041+soft),pink=ramp(warm,.115,.050+soft);
-    const low=clamp(.7*(Y-.4)+.38*(n(X*4+11,Y*4)-.5));
+    const yellow=ramp(warm,-.033,.041+soft),pink=ramp(warm,.115,.050+soft),lp=F.low[k]*pink;
     for(let c=0;c<3;c++){
       let val=blend(p[2][c],p[3][c],frost);
       val=blend(val,p[1][c],lilac);val=blend(val,p[0][c],dark);
       val=blend(val,p[4][c],yellow);val=blend(val,p[5][c],pink);
-      data[k+c]=blend(val,p[1][c],low*pink);
+      data[o+c]=blend(val,p[1][c],lp);
     }
-    data[k+3]=255;
+    data[o+3]=255;
   }
   ctx.putImageData(pixels,0,0);return plate;
 }
-let cacheKey='',cachedPlate;
-function paintBase(canvas,s){
-  const key=[s.seed,s.shape,s.flow,s.blur,...s.colors].join('|');
-  if(key!==cacheKey){cachedPlate=makePlate(s);cacheKey=key}
+const FULL=600,DRAFT=200,fieldCache={},plateCache={};
+const fieldKey=(s,side)=>[s.seed,s.shape,s.flow,side].join('|');
+function fieldsReady(s,side){return fieldCache[side]&&fieldCache[side].key===fieldKey(s,side)}
+function plateFor(s,side){
+  const fk=fieldKey(s,side),pk=[fk,s.blur,...s.colors].join('|');
+  if(plateCache[side]&&plateCache[side].key===pk)return plateCache[side].plate;
+  if(!fieldsReady(s,side))fieldCache[side]={key:fk,F:computeFields(s,side)};
+  const plate=composePlate(fieldCache[side].F,s);plateCache[side]={key:pk,plate};return plate;
+}
+function paintBase(canvas,s,side=FULL){
   const ctx=canvas.getContext('2d',{willReadFrequently:true});
-  ctx.imageSmoothingQuality='high';ctx.drawImage(cachedPlate,0,0,canvas.width,canvas.height);
+  ctx.imageSmoothingQuality='high';ctx.drawImage(plateFor(s,side),0,0,canvas.width,canvas.height);
   return ctx;
 }
-function grainPainter(s,side){
-  const strength=s.grain/100, zoom=3000/side, cell=(1.7+7.6*(s.size/100)**1.7);
+function grainFn(s,side){
+  const zoom=3000/side, cell=(1.7+7.6*(s.size/100)**1.7);
   const seed=s.seed|0, material=s.texture;
   // Sample the same grain field in print coordinates at both resolutions.
   const attenuation=Math.min(1,Math.sqrt(cell/zoom));
@@ -137,9 +162,7 @@ function grainPainter(s,side){
     return blend(blend(hash(ix,iy,salt),hash(ix+1,iy,salt),fx),
                  blend(hash(ix,iy+1,salt),hash(ix+1,iy+1,salt),fx),fy);
   }
-  return (data,startRow) => {
-    for(let k=0;k<data.length;k+=4){
-      const index=k/4,px=index%side,py=Math.floor(index/side)+startRow;
+  return (px,py) => {
       // jitter inside the pixel footprint: a downscaled preview averages grain instead of beating against the noise lattice (moire)
       const x=(px+.5+(hash(px,py,seed+5)-.5)*.98)*zoom,y=(py+.5+(hash(py,px,seed+7)-.5)*.98)*zoom;
       // rotated domain hides the axis-aligned lattice of the value noise
@@ -149,26 +172,53 @@ function grainPainter(s,side){
       let delta;
       if(material==='spray'){
         const fleck=Math.max(0,(a-.56)/.44);
-        delta=(15*(a-.5)-205*fleck**1.65+24*fine/Math.sqrt(zoom))*strength;
+        delta=15*(a-.5)-205*fleck**1.65+24*fine/Math.sqrt(zoom);
       }else if(material==='paper'){
         const fibre=noise(x/(cell*3.6),y/(cell*.64),seed+33);
-        delta=((a-.5)*28+(fibre-.49)*94+fine*12)*strength;
-      }else{delta=((a-.5)*105+fine*40/Math.sqrt(zoom))*strength}
-      delta*=attenuation;
-      data[k]+=delta;data[k+1]+=delta;data[k+2]+=delta*.95;
+        delta=(a-.5)*28+(fibre-.49)*94+fine*12;
+      }else{delta=(a-.5)*105+fine*40/Math.sqrt(zoom)}
+      return delta*attenuation;
+  };
+}
+// export: rows are computed strip by strip, nothing is cached at 3000 px
+function grainPainter(s,side){
+  const at=grainFn(s,side),st=s.grain/100;
+  return (data,startRow) => {
+    for(let k=0,i=0;k<data.length;k+=4,i++){
+      const d=at(i%side,Math.floor(i/side)+startRow)*st;
+      data[k]+=d;data[k+1]+=d;data[k+2]+=d*.95;
     }
   };
+}
+// preview: the grain pattern does not depend on intensity, so it is computed once and only scaled
+let grainCache={key:''};
+function previewGrain(s,side){
+  const key=[s.seed,s.texture,s.size,side].join('|');
+  if(grainCache.key!==key){
+    const at=grainFn(s,side),G=new Float32Array(side*side);
+    for(let py=0,i=0;py<side;py++)for(let px=0;px<side;px++,i++)G[i]=at(px,py);
+    grainCache={key,G};
+  }
+  return grainCache.G;
 }
 const ROT_C=Math.cos(.6135),ROT_S=Math.sin(.6135),ROT2_C=Math.cos(1.3962),ROT2_S=Math.sin(1.3962);
 function grainStrip(ctx,w,y,h,paint){
   const im=ctx.getImageData(0,y,w,h);paint(im.data,y);ctx.putImageData(im,0,y);
 }
 function textured(s){return s.texture!=='clean'&&s.grain>0}
-let frame=0;
+let frame=0,fullTimer=0,forceFull=false;
 function preview(){
   frame=0;
-  const canvas=$('view'),ctx=paintBase(canvas,state),w=canvas.width;
-  if(textured(state))grainStrip(ctx,w,0,w,grainPainter(state,w));
+  // If the geometry has to be recomputed, show a fast low-res draft now and the full plate once input pauses.
+  const full=forceFull||fieldsReady(state,FULL);forceFull=false;
+  clearTimeout(fullTimer);
+  if(!full)fullTimer=setTimeout(()=>{forceFull=true;refresh()},140);
+  const canvas=$('view'),ctx=paintBase(canvas,state,full?FULL:DRAFT),w=canvas.width;
+  if(textured(state)){
+    const G=previewGrain(state,w),st=state.grain/100,im=ctx.getImageData(0,0,w,w),data=im.data;
+    for(let k=0,i=0;i<G.length;k+=4,i++){const d=G[i]*st;data[k]+=d;data[k+1]+=d;data[k+2]+=d*.95}
+    ctx.putImageData(im,0,0);
+  }
   if(document.activeElement!==$('seed'))$('seed').value=state.seed;
 }
 function refresh(){if(!frame)frame=requestAnimationFrame(preview)}
