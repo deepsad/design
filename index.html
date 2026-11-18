@@ -234,6 +234,12 @@ const GRIDS = [
   {id:'iso', name:'Изометрия', note:'Равносторонние треугольники: три семейства прямых под 60°.'},
   {id:'radial', name:'Радиальная', note:'Кольца и лучи из центра. Число лучей задаётся ниже.'},
   {id:'hex', name:'Соты', note:'Шестиугольная сетка: каждая сота — отдельная область.'},
+  {id:'diamond', name:'Ромбы', note:'Клетка, повёрнутая на 45°: вершины ромбов лежат в узлах обычной клетки.'},
+  {id:'diag', name:'Диагонали', note:'Клетка, в которой каждую ячейку пересекают обе диагонали, — получаются треугольники.'},
+  {id:'golden', name:'Золотая', note:'Окружности и прямые в пропорции золотого сечения (1 : 1,618) от центра листа. Шаг сетки здесь не используется.'},
+  {id:'flower', name:'Цветок', note:'«Цветок жизни»: 19 окружностей одного радиуса в узлах треугольной решётки. Радиус — шаг сетки.'},
+  {id:'rings', name:'Кольца', note:'Окружности радиусом в шаг сетки в каждом узле клетки — перекрытия дают лепестки и звёзды. Минимальный шаг — 48 px.'},
+  {id:'rosette', name:'Розетка', note:'Лепестки: окружности, проходящие через центр, разложены по кругу. Их число задаётся ниже.'},
   {id:'dots', name:'Точки', note:'У точечной сетки нет замкнутых ячеек, поэтому заливать нечего. Точки — опоры для пера, прямой и овала; для заливки выберите другую сетку.'}
 ];
 const PALETTE = ['#111111','#ffffff','#ff4d2e','#ff9f1c','#ffd60a','#2ec27e','#00a8a8','#2f6bff','#7b4dff','#ff5fa2','#8a8f98'];
@@ -340,6 +346,38 @@ function buildGeom(){
         if (dq > dr && dq > dz) rq = -rr - rz; else if (dr > dz) rr = -rq - rz;
         return clipToSheet(hexAt(rq, rr));
       };
+      break;
+    }
+    case 'diamond': family(Math.PI/4, s*Math.SQRT1_2); family(-Math.PI/4, s*Math.SQRT1_2); break;
+    case 'diag': family(0, s); family(Math.PI/2, s); family(Math.PI/4, s*Math.SQRT1_2); family(-Math.PI/4, s*Math.SQRT1_2); break;
+    case 'golden': {
+      const PHI = (1 + Math.sqrt(5)) / 2;
+      for (let k = 0, r = C; k <= 5; k++, r /= PHI) {
+        addCircle(C, C, r);
+        if (k === 1 || k === 2) { addLine(1, 0, C - r); addLine(1, 0, C + r); addLine(0, 1, C - r); addLine(0, 1, C + r); }
+      }
+      const r1 = C / PHI, o = C - r1;
+      addCircle(C - o, C, r1); addCircle(C + o, C, r1); addCircle(C, C - o, r1); addCircle(C, C + o, r1);
+      addLine(Math.SQRT1_2, -Math.SQRT1_2, 0); addLine(Math.SQRT1_2, Math.SQRT1_2, U*Math.SQRT1_2);
+      break;
+    }
+    case 'flower': {
+      for (let q = -2; q <= 2; q++) for (let r = -2; r <= 2; r++) {
+        if (Math.abs(q + r) > 2) continue;
+        addCircle(C + s*(q + r/2), C + s*r*SQ3/2, s);
+      }
+      addCircle(C, C, 3*s);
+      break;
+    }
+    case 'rings': {
+      const r = Math.max(48, s), K = Math.ceil(C / r) + 1;
+      for (let i = -K; i <= K; i++) for (let j = -K; j <= K; j++) addCircle(C + i*r, C + j*r, r);
+      break;
+    }
+    case 'rosette': {
+      const N = Math.max(3, g.rays|0), a0 = -Math.PI/2;
+      for (let i = 0; i < N; i++) { const a = a0 + i*2*Math.PI/N; addCircle(C + Math.cos(a)*s, C + Math.sin(a)*s, s); }
+      addCircle(C, C, 2*s);
       break;
     }
     case 'dots': {
@@ -697,6 +735,12 @@ const GICON = {
   iso:'<rect x="4" y="4" width="32" height="32"/><path d="M4 9l32 18M4 23l25 14M11 4l25 14M36 9L4 27M36 23L11 37M29 4L4 18M12 4v32M20 4v32M28 4v32"/>',
   radial:'<rect x="4" y="4" width="32" height="32"/><circle cx="20" cy="20" r="6"/><circle cx="20" cy="20" r="12"/><path d="M20 4v32M4 20h32M8 8l24 24M32 8L8 32"/>',
   hex:'<rect x="4" y="4" width="32" height="32"/><path d="M14 8l6-3.5 6 3.5v7l-6 3.5-6-3.5zM8 18.5l6-3.5 6 3.5v7l-6 3.5-6-3.5zM20 18.5l6-3.5 6 3.5v7l-6 3.5-6-3.5z"/>',
+  diamond:'<rect x="4" y="4" width="32" height="32"/><path d="M4 12l8-8M4 20l16-16M4 28l24-24M4 36l32-32M12 36l24-24M20 36l16-16M28 36l8-8M28 4l8 8M20 4l16 16M12 4l24 24M4 4l32 32M4 12l24 24M4 20l16 16M4 28l8 8"/>',
+  diag:'<rect x="4" y="4" width="32" height="32"/><path d="M12 4v32M20 4v32M28 4v32M4 12h32M4 20h32M4 28h32M4 4l32 32M36 4L4 36M4 20L20 4l16 16-16 16z"/>',
+  golden:'<rect x="4" y="4" width="32" height="32"/><circle cx="20" cy="20" r="16"/><circle cx="20" cy="20" r="9.9"/><circle cx="20" cy="20" r="6.1"/><circle cx="20" cy="20" r="3.8"/><path d="M10.1 4v32M29.9 4v32M4 13.9h32"/>',
+  flower:'<rect x="4" y="4" width="32" height="32"/><circle cx="20" cy="20" r="6"/><circle cx="26" cy="20" r="6"/><circle cx="14" cy="20" r="6"/><circle cx="23" cy="14.8" r="6"/><circle cx="17" cy="14.8" r="6"/><circle cx="23" cy="25.2" r="6"/><circle cx="17" cy="25.2" r="6"/>',
+  rings:'<rect x="4" y="4" width="32" height="32"/><circle cx="12" cy="12" r="8"/><circle cx="28" cy="12" r="8"/><circle cx="12" cy="28" r="8"/><circle cx="28" cy="28" r="8"/><circle cx="20" cy="20" r="8"/>',
+  rosette:'<rect x="4" y="4" width="32" height="32"/><circle cx="20" cy="20" r="14"/><circle cx="20" cy="13" r="7"/><circle cx="20" cy="27" r="7"/><circle cx="13" cy="20" r="7"/><circle cx="27" cy="20" r="7"/><circle cx="25" cy="15" r="7"/><circle cx="15" cy="25" r="7"/><circle cx="15" cy="15" r="7"/><circle cx="25" cy="25" r="7"/>',
   dots:'<rect x="4" y="4" width="32" height="32"/><g fill="currentColor" stroke="none"><circle cx="12" cy="12" r="1.6"/><circle cx="20" cy="12" r="1.6"/><circle cx="28" cy="12" r="1.6"/><circle cx="12" cy="20" r="1.6"/><circle cx="20" cy="20" r="1.6"/><circle cx="28" cy="20" r="1.6"/><circle cx="12" cy="28" r="1.6"/><circle cx="20" cy="28" r="1.6"/><circle cx="28" cy="28" r="1.6"/></g>'
 };
 $('gridTypes').innerHTML = GRIDS.map(g => `<button class="gt" data-g="${g.id}"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.3">${GICON[g.id]}</svg>${g.name}</button>`).join('');
@@ -711,7 +755,8 @@ function syncUI(){
   $('gridNote').textContent = meta.note; $('gridNote').classList.toggle('warn', g.type === 'dots');
   const st = $('step'); st.min = Math.round(16*k); st.max = Math.round(U/2*k); st.step = 1; st.value = Math.round(g.step*k);
   $('stepV').textContent = Math.round(g.step*k) + ' px';
-  $('raysBox').style.display = g.type === 'radial' ? '' : 'none';
+  $('raysBox').style.display = g.type === 'radial' || g.type === 'rosette' ? '' : 'none';
+  st.style.display = st.previousElementSibling.style.display = g.type === 'golden' ? 'none' : '';
   $('rays').value = g.rays; $('raysV').textContent = g.rays;
   $('axes').checked = g.axes;
   $('gColor').value = g.color;
